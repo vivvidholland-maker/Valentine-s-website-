@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Valentine's Fun Surprise 💖</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap');
+body {
+  margin:0; font-family:'Montserrat', Arial,sans-serif;
+  background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+  color:#fff; text-align:center; overflow-x:hidden;
+  min-height:100vh; display:flex; justify-content:center; align-items:center;
+  opacity:0; transition:opacity 1.5s; flex-direction:column;
+}
+body.loaded{opacity:1;}
+.page{display:none; flex-direction:column; align-items:center; width:100%; max-width:500px; padding:20px; transition:0.3s;}
+.active{display:flex;}
+h1,h2,p{margin:15px 0; letter-spacing:0.5px;}
+h1{font-size:2rem; font-weight:700;}
+h2{font-size:1.5rem; font-weight:600;}
+button{
+  background:#fff; color:#ff6b81; border:none; padding:12px 25px;
+  font-size:16px; border-radius:50px; cursor:pointer; margin:10px;
+  transition:transform 0.3s, background 0.3s;
+}
+button:hover{transform:scale(1.05); background:#ffe3e8;}
+#heart-container,#confetti-container{
+  position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; overflow:hidden;
+}
+.heart,.confetti{position:absolute;font-size:24px;opacity:0.8;animation:float 4s linear infinite;}
+@keyframes float{0%{transform:translateY(0) rotate(0deg);opacity:0.8;}50%{opacity:1;}100%{transform:translateY(-800px) rotate(360deg);opacity:0;}}
+.message{margin:20px 0; opacity:0; transition:opacity 0.8s;}
+#footer{font-size:12px;color:gray;margin-top:20px;}
+@media(max-width:480px){
+  button{padding:10px 20px; font-size:14px;}
+}
+.back-btn{
+  background:none; border:none; color:#fff; cursor:pointer; margin-top:15px;
+}
+</style>
+</head>
+<body>
+<div id="heart-container"></div>
+<div id="confetti-container"></div>
+
+<!-- PAGE 1: Valentine question -->
+<div id="page1" class="page active">
+<h1>Hey there!</h1>
+<p>Will you be my Valentine?</p>
+<div>
+  <button id="yesBtn">YES</button>
+  <button id="noBtn">NO</button>
+</div>
+</div>
+
+<!-- PAGE 2: Just joking attendance -->
+<div id="page2" class="page">
+<p class="message" id="msg1">JUST JOKING! Abeg help me write attendance. You know my reg number 😜</p>
+<button class="nextBtn">Next</button>
+</div>
+
+<!-- PAGE 3: Happy Valentine’s Day -->
+<div id="page3" class="page">
+<h1>JUST JOKING! Abeg help me write attendance. You know my reg number 😜</h1>
+<button class="nextBtn">Next</button>
+</div>
+
+<!-- PAGE 4: Final page logout -->
+<div id="page4" class="page">
+<h1>Yay! 💖</h1>
+<p>Happy Valentine's day in advance </p>
+<button id="finalBtn">Logout</button>
+</div>
+
+<!-- PAGE NO -->
+<div id="pageNo" class="page">
+<h1>Oops 😅</h1>
+<p>Go back and tap YES!</p>
+<button class="back-btn" id="backBtn">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+<path d="M19 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H19v-2z"/>
+</svg> Back
+</button>
+</div>
+
+<div id="footer">All rights reserved &copy; 2026 Val Present</div>
+
+<script>
+window.addEventListener('load', ()=>{ document.body.classList.add('loaded'); });
+
+let yesUsed=false;
+let noUsed=false;
+
+function createHeart(){
+  const heart=document.createElement('div');
+  heart.className='heart';
+  heart.innerHTML='<svg width="24" height="24" viewBox="0 0 24 24" fill="red"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+  heart.style.left=Math.random()*window.innerWidth+'px';
+  document.getElementById('heart-container').appendChild(heart);
+  setTimeout(()=>heart.remove(),4000);
+}
+setInterval(createHeart,300);
+
+function createConfetti(){
+  for(let i=0;i<30;i++){
+    const conf=document.createElement('div');
+    conf.className='confetti';
+    conf.innerHTML='<svg width="16" height="16"><circle cx="8" cy="8" r="8" fill="yellow"/></svg>';
+    conf.style.left=Math.random()*window.innerWidth+'px';
+    document.getElementById('confetti-container').appendChild(conf);
+    setTimeout(()=>conf.remove(),4000);
+  }
+}
+
+const pages=[...document.querySelectorAll('.page')];
+let currentPage=0;
+
+const yesBtn=document.getElementById('yesBtn');
+const noBtn=document.getElementById('noBtn');
+const backBtn=document.getElementById('backBtn');
+const finalBtn=document.getElementById('finalBtn');
+
+yesBtn.addEventListener('click',()=>{
+  if(noUsed){ alert("Can't use YES after NO 😅"); return; }
+  if(yesUsed){ alert("You can't use YES twice 😅"); return; }
+  yesUsed=true;
+  pages[0].classList.remove('active');
+  pages[1].classList.add('active');
+  createConfetti();
+  currentPage=1;
+});
+
+noBtn.addEventListener('click',()=>{
+  noUsed=true;
+  pages[0].classList.remove('active');
+  pages[4].classList.add('active'); // pageNo
+  currentPage=4;
+});
+
+backBtn.addEventListener('click',()=>{
+  pages[4].classList.remove('active');
+  pages[0].classList.add('active');
+  noUsed=false;
+  yesUsed=false;
+  currentPage=0;
+});
+
+// Next buttons
+const nextBtns=document.querySelectorAll('.nextBtn');
+nextBtns.forEach((btn)=>{
+  btn.addEventListener('click',()=>{
+    pages[currentPage].classList.remove('active');
+    currentPage++;
+    pages[currentPage].classList.add('active');
+  });
+});
+
+// Final logout
+finalBtn.addEventListener('click',()=>{window.close();});
+</script>
+</body>
+</html>
